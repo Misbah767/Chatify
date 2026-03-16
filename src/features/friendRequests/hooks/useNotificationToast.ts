@@ -4,7 +4,7 @@
 import { useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { selectNotifications } from "@/redux/slices/notifications.slice";
-import { showSuccessToast } from "@/components/ui/Toast/Toast";
+import { showSuccessToast } from "@/Components/ui/Toast/Toast";
 
 export const useNotificationToast = () => {
   const notifications = useSelector(selectNotifications);
