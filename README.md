@@ -1,36 +1,122 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# - Advanced Chat App
 
-## Getting Started
+💬 **Chatify** is a full-featured real-time chat application built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Node.js**, **Express.js**, and **MongoDB**.  
+It supports **OTP-based registration & login**, **password reset**, **real-time friend requests**, **messaging with media files**, **typing & recording indicators**, **profile management**, and fully responsive UI for all devices.
 
-First, run the development server:
+---
+
+## 📚 Table of Contents
+
+- [Purpose](#purpose)
+- [Features](#features)
+- [User Roles & Permissions](#user-roles--permissions)
+- [Tech Stack](#tech-stack)
+- [Setup & Installation](#setup--installation)
+- [Environment Variables](#environment-variables)
+- [Authentication & Chat Flow](#authentication--chat-flow)
+- [Real-Time Messaging Flow](#real-time-messaging-flow)
+- [Author](#author)
+
+---
+
+## 🎯 Purpose
+
+Chatify is designed to provide a **secure, interactive, and feature-rich chat platform**, including:
+
+- Real-time messaging with text, images, videos, PDFs, voice notes, and emojis
+- OTP-based **user registration & login**
+- Password reset via OTP
+- Friend requests & real-time acceptance/rejection
+- Profile management with real-time updates
+- Responsive and advanced UI for mobile, tablet, and desktop
+- Full validation with visual cues (input borders red, messages for invalid inputs)
+
+---
+
+## Features
+
+### User Authentication & Authorization
+
+- **Registration:** User signs up with name, email, and password
+  - OTP sent to email for verification
+  - OTP expires in **10 minutes**
+  - Resend OTP option available
+  - Fully validated fields with inline error messages
+- **Login:** OTP-verified login
+- **Forgot Password:** Request OTP and reset password with validation
+- **JWT Authentication:** Access + Refresh tokens with token revocation support
+
+### Friend Requests & Contacts
+
+- Users can **search for other users**
+- Send friend requests in real-time
+- Accept or reject friend requests
+  - Accepted users are added to each other’s contact list
+  - Rejected requests are removed in real-time
+- Cancel pending requests
+- Real-time notifications for friend request updates
+
+### Real-Time Messaging
+
+- Send **text messages, emojis, images, videos, PDFs, and voice messages**
+- Real-time **typing indicators** & **recording status**
+- **Message status indicators:**
+  - Single tick = sent
+  - Double tick = delivered
+  - Blue tick = seen
+- Responsive chat bubbles with **avatars** and **user names**
+- Advanced UI with **modern message layout**
+
+### Profile Management
+
+- Update **profile picture, name, and bio**
+- Changes are **reflected in real-time**
+- Accessible from **settings** for full control
+
+### Email & Notifications
+
+- OTP for account verification
+- OTP for password reset
+- Confirmation emails after account verification and password reset
+
+### 🔐 Security
+
+- Protected routes using `userAuth` middleware
+- Role-based access using `roleAuth` middleware
+- JWT verification and expiration handling
+- Token revocation
+- Error handling for unauthorized or forbidden access
+- Password hashing with bcrypt
+
+---
+
+## User Roles & Permissions
+
+| Role     | Friend Requests | Real-Time Messaging | Profile Management | Protected Routes |
+| -------- | --------------- | ------------------- | ------------------ | ---------------- |
+| **User** | ✅              | ✅                  | ✅                 | ✅               |
+
+---
+
+## Tech Stack
+
+- **Frontend:** Next.js, TypeScript, Tailwind CSS, React Redux, Framer Motion
+- **Backend:** Node.js, Express.js
+- **Database:** MongoDB (Mongoose ODM)
+- **Authentication:** JWT + Refresh Tokens
+- **Email:** Nodemailer (OTP & verification)
+- **Validation:** Joi / Yup
+- **Real-Time:** Socket.io
+- **Security:** bcrypt, password hashing
+
+---
+
+## Setup & Installation
+
+### Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/YourUsername/Chatify.git
+cd Chatify
+npm install
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
