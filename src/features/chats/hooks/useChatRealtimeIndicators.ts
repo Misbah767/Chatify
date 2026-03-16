@@ -37,6 +37,11 @@ export const useChatRealtimeIndicators = (partnerId: string | null) => {
     onTypingStop(handleTypingStop);
     onRecordingStart(handleRecordingStart);
     onRecordingStop(handleRecordingStop);
+
+    // Optional cleanup if your socket library supports off
+    return () => {
+      // remove listeners if needed
+    };
   }, [partnerId]);
 
   return { typingUsers, recordingUsers };

@@ -1,7 +1,14 @@
+"use client";
+
 import { useEffect, RefObject } from "react";
 
-export const useAutoScroll = (ref: RefObject<HTMLDivElement>, deps: any[]) => {
+export const useAutoScroll = (
+  ref: RefObject<HTMLDivElement | null>, // Accept null safely
+  deps: any[]
+) => {
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, deps);
 };
