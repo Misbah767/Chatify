@@ -2,7 +2,6 @@
 
 import { io, Socket } from "socket.io-client";
 import store from "@/redux/store";
-import { addNotification } from "@/redux/slices/notification.slice";
 import {
   fetchIncomingRequests,
   fetchSentRequests,
@@ -17,7 +16,6 @@ INIT SOCKET
 */
 export const initSocket = (userId: string): Socket | undefined => {
   if (!userId) {
-    // console.warn(" Socket init skipped: missing userId");
     return;
   }
 
@@ -35,7 +33,7 @@ export const initSocket = (userId: string): Socket | undefined => {
   });
 
   socket.on("disconnect", (reason) => {
-    console.log(" Socket disconnected:", reason);
+    console.log("Socket disconnected:", reason);
   });
 
   socket.on("connect_error", (err) => {
@@ -43,100 +41,37 @@ export const initSocket = (userId: string): Socket | undefined => {
   });
 
   // ---------------- FRIEND REQUEST RECEIVED ----------------
-  socket.on("friend_request_received", (payload: any) => {
-    // console.log(" Friend request received:", payload);
+  socket.on("friend_request_received", () => {
     store.dispatch(fetchIncomingRequests());
     store.dispatch(fetchSentRequests());
-    store.dispatch(
-      addNotification({
-        type: "friend_request_received",
-        message: `Friend request from ${payload.from?.name}`,
-        relatedUser: payload.from,
-        requestId: payload._id,
-      })
-    );
   });
 
   // ---------------- FRIEND REQUEST SENT CONFIRM ----------------
-  socket.on("friend_request_sent", (payload: any) => {
-    // console.log(" Friend request sent:", payload);
+  socket.on("friend_request_sent", () => {
     store.dispatch(fetchSentRequests());
-    store.dispatch(
-      addNotification({
-        type: "friend_request_sent",
-        message: `Friend request sent to ${payload.to}`,
-        relatedUser: { _id: payload.to },
-        requestId: payload._id,
-      })
-    );
   });
 
   // ---------------- FRIEND REQUEST RESPONSE ----------------
-  socket.on("friend_request_response", (payload: any) => {
-    // console.log(" Friend request response:", payload);
+  socket.on("friend_request_response", () => {
     store.dispatch(fetchIncomingRequests());
     store.dispatch(fetchSentRequests());
-
-    const message =
-      payload.action === "accepted"
-        ? "accepted your friend request"
-        : "rejected your friend request";
-
-    store.dispatch(
-      addNotification({
-        type: "friend_request_response",
-        message: `${payload.fromId} ${message}`,
-        relatedUser: { _id: payload.fromId },
-        requestId: payload.requestId,
-      })
-    );
   });
 
   // ---------------- FRIEND REQUEST CANCELLED ----------------
-  socket.on("friend_request_cancelled", (payload: any) => {
-    // console.log(" Friend request cancelled:", payload);
+  socket.on("friend_request_cancelled", () => {
     store.dispatch(fetchIncomingRequests());
     store.dispatch(fetchSentRequests());
-    store.dispatch(
-      addNotification({
-        type: "friend_request_cancelled",
-        message: `Friend request cancelled by ${payload.fromId}`,
-        relatedUser: { _id: payload.fromId },
-        requestId: payload.requestId,
-      })
-    );
   });
 
   // ---------------- NEW CONTACT ADDED ----------------
-  socket.on("new_contact_added", ({ userId }) => {
-    // console.log(" New contact added:", userId);
+  socket.on("new_contact_added", () => {
     store.dispatch(fetchIncomingRequests());
     store.dispatch(fetchSentRequests());
-    store.dispatch(
-      addNotification({
-        type: "new_contact_added",
-        message: `You are now friends with ${userId}`,
-        relatedUser: { _id: userId },
-      })
-    );
   });
 
   // ---------------- USER ONLINE / OFFLINE ----------------
-  socket.on("user_status_changed", ({ userId, isOnline }) => {
-    // console.log(" User status:", userId, isOnline);
-    store.dispatch(
-      addNotification({
-        type: "status_change",
-        message: `User ${userId} is now ${isOnline ? "Online" : "Offline"}`,
-        relatedUser: { _id: userId },
-      })
-    );
-  });
-
-  // ---------------- GENERIC NOTIFICATION ----------------
-  socket.on("new_notification", (notification: any) => {
-    // console.log(" Notification:", notification);
-    store.dispatch(addNotification(notification));
+  socket.on("user_status_changed", () => {
+    // optional: later add online status logic here
   });
 
   return socket;
@@ -191,7 +126,7 @@ GET SOCKET
 =============================
 */
 export const getSocket = (): Socket => {
-  if (!socket) throw new Error("❌ Socket not initialized");
+  if (!socket) throw new Error("Socket not initialized");
   return socket;
 };
 
@@ -202,7 +137,7 @@ DISCONNECT SOCKET
 */
 export const disconnectSocket = () => {
   if (socket) {
-    console.log(" Disconnecting socket...");
+    console.log("Disconnecting socket...");
     socket.disconnect();
     socket = null;
   }
