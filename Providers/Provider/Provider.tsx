@@ -11,12 +11,8 @@ import SocketProvider from "../SocketProvider/SocketProvider";
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <Provider store={store}>
-      {/* Restore user from localStorage */}
       <AuthInitializer />
-
-      {/* Socket connection after auth */}
       <SocketProvider>
-        {/* Public / Private route protection */}
         <RouteWrapperClient>{children}</RouteWrapperClient>
       </SocketProvider>
     </Provider>

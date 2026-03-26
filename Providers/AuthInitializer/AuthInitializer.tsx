@@ -16,8 +16,6 @@ const AuthInitializer: React.FC = () => {
 
       if (storedUser && token) {
         const user = JSON.parse(storedUser);
-
-        // Set axios token header
         setAxiosToken(token);
 
         dispatch(
