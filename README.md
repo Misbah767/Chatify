@@ -2,13 +2,10 @@
 
 **Chatify** is a full-featured real-time chat application built with **Next.js**, **TypeScript**, **Tailwind CSS**, **Node.js**, **Express.js**, and **MongoDB**.
 
----
-
-## Notice
+#### Notice
 
 This project is created by Misbah Ilyas for portfolio/demo purposes.
 You are welcome to view the code, but reuse, copying, or redistribution is not allowed.
-It supports **OTP-based registration & login**, ...
 It supports **OTP-based registration & login**, **password reset**, **real-time friend requests**, **messaging with media files**, **typing & recording indicators**, **profile management**, and fully responsive UI for all devices.
 
 ---
