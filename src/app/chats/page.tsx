@@ -16,9 +16,9 @@ const ChatPage: React.FC = () => {
     closeChat,
   } = useChatPage();
 
-  // ✅IMPORTANT: wrap openChat to also lock tab to "contacts"
+  // IMPORTANT: wrap openChat to also lock tab to "contacts"
   const handleSelectChat = (chat: any) => {
-    setActiveTab("contacts"); // 👈 keeps sidebar active state correct
+    setActiveTab("contacts"); // keeps sidebar active state correct
     openChat(chat);
   };
 

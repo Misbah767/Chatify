@@ -1,8 +1,6 @@
 "use client";
 
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
-  "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "");
 
 export const useUserProfileSidebar = (user: any) => {
   const avatar = user?.profilePic

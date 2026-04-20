@@ -4,9 +4,7 @@ import { useUserProfile } from "./useUserProfile";
 import { useUpdateUserProfile } from "./useUpdateUserProfile";
 
 /* ================= BASE URL ================= */
-const BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
-  "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "");
 
 export const useUserProfileUI = () => {
   const { profile, loading, error } = useUserProfile();
