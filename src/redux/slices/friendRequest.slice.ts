@@ -85,19 +85,19 @@ const friendRequestSlice = createSlice({
 
   extraReducers: (builder) => {
     /* ================= SEND REQUEST ================= */
-    builder
-      .addCase(sendFriendRequest.fulfilled, (state, action) => {
-        const req = action.payload;
-        if (!req) return;
+    builder.addCase(sendFriendRequest.fulfilled, (state, action) => {
+      const req = action.payload;
+      if (!req) return;
 
-        state.sent.push(req);
+      state.sent.push(req);
 
-        const toId = req?.to?._id;
-        if (toId) state.relationshipStatuses[toId] = "pending";
-      })
-      .addCase(sendFriendRequest.rejected, (state, action) => {
-        state.error = action.payload as string;
-      });
+      const toId = req?.to?._id;
+      if (toId) state.relationshipStatuses[toId] = "pending";
+    });
+
+    builder.addCase(sendFriendRequest.rejected, (state, action) => {
+      state.error = action.payload as string;
+    });
 
     /* ================= RESPOND REQUEST ================= */
     builder.addCase(respondFriendRequest.fulfilled, (state, action) => {
@@ -129,10 +129,11 @@ const friendRequestSlice = createSlice({
 
     /* ================= FETCH INCOMING ================= */
     builder.addCase(fetchIncomingRequests.fulfilled, (state, action) => {
-      const data = action.payload || [];
+      const data: FriendRequest[] = action.payload || [];
+
       state.incoming = data;
 
-      data.forEach((r) => {
+      data.forEach((r: FriendRequest) => {
         const id = r?.from?._id;
         if (id) state.relationshipStatuses[id] = r.status;
       });
@@ -140,10 +141,11 @@ const friendRequestSlice = createSlice({
 
     /* ================= FETCH SENT ================= */
     builder.addCase(fetchSentRequests.fulfilled, (state, action) => {
-      const data = action.payload || [];
+      const data: FriendRequest[] = action.payload || [];
+
       state.sent = data;
 
-      data.forEach((r) => {
+      data.forEach((r: FriendRequest) => {
         const id = r?.to?._id;
         if (id) state.relationshipStatuses[id] = r.status;
       });
