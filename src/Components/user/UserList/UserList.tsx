@@ -10,25 +10,40 @@ const UserList: React.FC = () => {
     useUserList();
 
   return (
-    <div className="p-4 w-full h-full flex flex-col">
+    <div className="p-4 w-full h-full flex flex-col bg-[#0f0f0f]">
       {/* SEARCH */}
       <UserSearch searchTerm={searchTerm} onSearch={setSearchTerm} />
 
-      <div className="mt-6 space-y-4 overflow-y-auto flex-1">
+      {/* LIST WRAPPER */}
+      <div className="mt-6 space-y-3 overflow-y-auto flex-1 pr-1">
+        {/* LOADING */}
         {loading && (
-          <p className="text-gray-400 text-center mt-6">Loading users...</p>
+          <p className="text-gray-500 text-center mt-6">Loading users...</p>
         )}
-        {error && <p className="text-red-400 text-center mt-6">{error}</p>}
 
-        {filteredUsers.map((user) => (
-          <UserRow key={user._id} user={user} />
-        ))}
+        {/* ERROR */}
+        {error && (
+          <p className="text-red-400 text-center mt-6 font-medium">{error}</p>
+        )}
 
+        {/* USERS */}
+        {!loading &&
+          !error &&
+          filteredUsers.map((user) => (
+            <div
+              key={user._id}
+              className="bg-[#141414] border border-[#262626] rounded-xl hover:bg-[#1a1a1a] transition-all duration-200"
+            >
+              <UserRow user={user} />
+            </div>
+          ))}
+
+        {/* EMPTY STATE */}
         {!loading &&
           !error &&
           filteredUsers.length === 0 &&
           searchTerm.trim() && (
-            <p className="text-gray-400 text-center mt-6">No users found</p>
+            <p className="text-gray-500 text-center mt-6">No users found</p>
           )}
       </div>
     </div>

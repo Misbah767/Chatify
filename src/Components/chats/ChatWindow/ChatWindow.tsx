@@ -1,11 +1,9 @@
 "use client";
 
 import React from "react";
-
 import ChatHeader from "../ChatHeader/ChatHeader";
 import ChatBody from "../ChatBody/ChatBody";
 import ChatFooter from "../ChatFooter/ChatFooter";
-
 import { useChatWindow } from "@/features/chats/hooks/useChatWindow";
 
 interface Props {
@@ -15,11 +13,11 @@ interface Props {
 }
 
 const ChatWindow: React.FC<Props> = ({ receiverId }) => {
-  const { chatId, mobileHeightStyle } = useChatWindow(receiverId);
+  const { chatId } = useChatWindow(receiverId);
 
   if (!chatId) {
     return (
-      <div className="flex-1 flex items-center justify-center text-gray-400">
+      <div className="flex-1 flex items-center justify-center text-gray-400 bg-[#141414]">
         Loading chat...
       </div>
     );
@@ -27,21 +25,29 @@ const ChatWindow: React.FC<Props> = ({ receiverId }) => {
 
   return (
     <div
-      className="flex flex-col w-full border border-gray-700 rounded-md overflow-hidden"
-      style={mobileHeightStyle}
+      className="
+        flex flex-col
+        w-full
+        h-full
+        bg-[#141414]
+        border border-[#262626]
+        rounded-md
+        overflow-hidden
+        relative
+      "
     >
-      {/* Chat Header */}
-      <div className="shrink-0">
+      {/* HEADER */}
+      <div className="shrink-0 z-10 bg-[#141414] border-b border-[#262626]">
         <ChatHeader targetId={receiverId} />
       </div>
 
-      {/* Chat Body */}
-      <div className="flex-1 px-2 md:px-4" style={{ overflow: "hidden" }}>
+      {/* BODY */}
+      <div className="flex-1 overflow-y-auto px-2 md:px-4 py-2 bg-[#141414]">
         <ChatBody chatId={chatId} />
       </div>
 
-      {/* Chat Footer */}
-      <div className="shrink-0">
+      {/* FOOTER */}
+      <div className="shrink-0 z-10 bg-[#141414] border-t border-[#262626]">
         <ChatFooter chatId={chatId} />
       </div>
     </div>

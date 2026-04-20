@@ -11,7 +11,7 @@ import { useChatRealtimeIndicators } from "./useChatRealtimeIndicators";
 import { useAutoScroll } from "./useAutoScroll";
 import { useSeenMessages } from "@/features/chats/hooks/useSeenMessages";
 
-export const BASE_URL = "http://localhost:5000";
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "");
 export const FALLBACK_AVATAR = "/default-avatar.png";
 
 export interface ProcessedMessage {

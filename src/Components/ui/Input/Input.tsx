@@ -28,19 +28,24 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
     ref
   ) => {
     const baseClasses =
-      "w-full rounded-md bg-[#0a0a0a] px-3 py-2 text-sm text-gray-200 placeholder-gray-400 transition-all duration-200 ease-in-out focus:outline-none";
+      "w-full rounded-lg px-3 py-2 text-sm transition-all duration-200 focus:outline-none";
 
     const paddingClasses = `${LeftIcon ? "pl-10" : ""} ${
       RightIcon ? "pr-10" : ""
     }`;
 
+    const colorClasses = `
+      bg-[#141414]
+      text-[#FFFFFF]
+      placeholder-[#999999]
+    `;
+
     const borderClasses = error
-      ? "border-1 border-red-400 focus:border-red-600 focus:ring-1 focus:ring-red-500"
-      : "border border-gray-600 focus:border-blue-400 focus:ring-1 focus:ring-[#2b6fb2]";
+      ? "border border-red-500 focus:border-red-500 focus:ring-1 focus:ring-red-500"
+      : "border border-[#262626]";
 
-    const inputClassName = `${baseClasses} ${paddingClasses} ${borderClasses} ${className}`;
+    const inputClassName = `${baseClasses} ${paddingClasses} ${colorClasses} ${borderClasses} ${className}`;
 
-    // handleChange wrapper if setValue is provided
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       if (setValue) setValue(e.target.value);
       if (props.onChange) props.onChange(e);
@@ -48,9 +53,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
 
     return (
       <div className="w-full">
-        <div className="relative">
+        <div className="relative group">
           {LeftIcon && (
-            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#999999] transition">
               <LeftIcon size={18} />
             </span>
           )}
@@ -68,13 +73,14 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
             <button
               type="button"
               onClick={onRightIconClick}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-200"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-[#999999] hover:text-[#703BF7] transition"
             >
               <RightIcon size={18} />
             </button>
           )}
         </div>
-        <p className="h-5 mt-1 text-xs text-red-400 font-medium">
+
+        <p className="h-5 mt-1 text-xs text-red-500 font-medium">
           {error ? error : "\u00A0"}
         </p>
       </div>

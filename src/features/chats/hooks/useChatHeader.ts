@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useUserProfile } from "@/features/messages/hooks/useUserProfile";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "");
 
 export const useChatHeader = (targetId?: string | null) => {
   const user = useUserProfile(targetId || undefined);

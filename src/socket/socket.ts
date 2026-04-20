@@ -7,6 +7,11 @@ import {
   fetchSentRequests,
 } from "@/redux/actions/friendRequest.actions";
 
+/* ================= BASE SOCKET URL ================= */
+const SOCKET_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
+  "http://localhost:5000";
+
 let socket: Socket | null = null;
 
 /*
@@ -15,13 +20,11 @@ INIT SOCKET
 =============================
 */
 export const initSocket = (userId: string): Socket | undefined => {
-  if (!userId) {
-    return;
-  }
+  if (!userId) return;
 
   if (socket?.connected) return socket;
 
-  socket = io("http://localhost:5000", {
+  socket = io(SOCKET_URL, {
     transports: ["websocket"],
     withCredentials: true,
   });
@@ -40,38 +43,33 @@ export const initSocket = (userId: string): Socket | undefined => {
     console.error("Socket connection error:", err);
   });
 
-  // ---------------- FRIEND REQUEST RECEIVED ----------------
+  // ---------------- FRIEND REQUEST EVENTS ----------------
   socket.on("friend_request_received", () => {
     store.dispatch(fetchIncomingRequests());
     store.dispatch(fetchSentRequests());
   });
 
-  // ---------------- FRIEND REQUEST SENT CONFIRM ----------------
   socket.on("friend_request_sent", () => {
     store.dispatch(fetchSentRequests());
   });
 
-  // ---------------- FRIEND REQUEST RESPONSE ----------------
   socket.on("friend_request_response", () => {
     store.dispatch(fetchIncomingRequests());
     store.dispatch(fetchSentRequests());
   });
 
-  // ---------------- FRIEND REQUEST CANCELLED ----------------
   socket.on("friend_request_cancelled", () => {
     store.dispatch(fetchIncomingRequests());
     store.dispatch(fetchSentRequests());
   });
 
-  // ---------------- NEW CONTACT ADDED ----------------
   socket.on("new_contact_added", () => {
     store.dispatch(fetchIncomingRequests());
     store.dispatch(fetchSentRequests());
   });
 
-  // ---------------- USER ONLINE / OFFLINE ----------------
   socket.on("user_status_changed", () => {
-    // optional: later add online status logic here
+    // optional future logic
   });
 
   return socket;
@@ -79,62 +77,55 @@ export const initSocket = (userId: string): Socket | undefined => {
 
 /*
 =============================
-SEND FRIEND REQUEST
+EMITS
 =============================
 */
+
 export const sendFriendRequest = (
   fromUser: any,
   toUser: any,
   requestId: string
 ) => {
-  if (!socket) return;
-  socket.emit("send_friend_request", { fromUser, toUser, requestId });
+  socket?.emit("send_friend_request", { fromUser, toUser, requestId });
 };
 
-/*
-=============================
-RESPOND TO FRIEND REQUEST
-=============================
-*/
 export const respondFriendRequest = (
   fromId: string,
   toId: string,
   requestId: string,
   action: "accepted" | "rejected"
 ) => {
-  if (!socket) return;
-  socket.emit("friend_request_response", { fromId, toId, requestId, action });
+  socket?.emit("friend_request_response", {
+    fromId,
+    toId,
+    requestId,
+    action,
+  });
 };
 
-/*
-=============================
-CANCEL FRIEND REQUEST
-=============================
-*/
 export const cancelFriendRequest = (
   fromId: string,
   toId: string,
   requestId: string
 ) => {
-  if (!socket) return;
-  socket.emit("friend_request_cancelled", { fromId, toId, requestId });
+  socket?.emit("friend_request_cancelled", {
+    fromId,
+    toId,
+    requestId,
+  });
 };
 
 /*
 =============================
-GET SOCKET
+UTILS
 =============================
 */
+
 export const getSocket = (): Socket => {
   if (!socket) throw new Error("Socket not initialized");
   return socket;
 };
 
-/*
-=============================
-DISCONNECT SOCKET
-=============================
-*/
 export const disconnectSocket = () => {
   if (socket) {
     console.log("Disconnecting socket...");

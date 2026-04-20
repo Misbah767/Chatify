@@ -41,19 +41,9 @@ export default function RootLayout({
       <head>{sacramentoFontLink}</head>
 
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-slate-900`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-[#0f172a] text-white`}
       >
-        {/*  GLOBAL BACKGROUND DECOR */}
-        <div className="fixed inset-0 -z-10 overflow-hidden">
-          {/* GRID */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]" />
-
-          {/* GLOW SHAPES */}
-          <div className="absolute top-0 -left-4 size-96 bg-[#4a5df9] opacity-20 blur-[100px]" />
-          <div className="absolute bottom-0 -right-4 size-96 bg-cyan-500 opacity-20 blur-[100px]" />
-        </div>
-
-        {/*  PROVIDERS */}
+        {/* PROVIDERS */}
         <Providers>
           {children}
           <Toast />

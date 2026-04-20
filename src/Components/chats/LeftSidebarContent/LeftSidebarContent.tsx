@@ -19,26 +19,26 @@ const LeftSidebarContent: React.FC<Props> = ({
   onSelectChat,
   selectedChat,
 }) => {
-  const baseStyles =
-    "bg-gray-800 overflow-y-auto w-full h-full md:w-78 md:h-full md:border-r border-gray-700 transition-transform duration-300";
-
-  const mobilePadding = "pb-16 md:pb-0";
-
-  const hideOnMobile = selectedChat ? "hidden md:flex" : "flex";
-
   return (
-    <div className={`${baseStyles} ${mobilePadding} ${hideOnMobile} flex-col`}>
-      {activeTab === "users" && <UserList />}
-      {activeTab === "friendRequests" && <FriendRequestList />}
-      {activeTab === "contacts" && (
-        <ContactsList onSelectContact={onSelectChat} />
-      )}
+    <div className="bg-[#141414] w-full h-full md:w-78 border-r border-[#262626] flex flex-col overflow-hidden">
+      <div className="flex-1 overflow-y-auto">
+        {activeTab === "users" && <UserList />}
 
-      {activeTab === "profile" && (
-        <div className="p-4">
-          <UserProfileCard />
-        </div>
-      )}
+        {activeTab === "friendRequests" && <FriendRequestList />}
+
+        {activeTab === "contacts" && (
+          <ContactsList
+            onSelectContact={onSelectChat}
+            selectedContactId={selectedChat?._id}
+          />
+        )}
+
+        {activeTab === "profile" && (
+          <div className="p-4">
+            <UserProfileCard />
+          </div>
+        )}
+      </div>
     </div>
   );
 };

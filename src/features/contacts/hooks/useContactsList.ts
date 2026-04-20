@@ -2,7 +2,7 @@
 
 import { useContacts, Contact } from "@/features/contacts/hooks/useContacts";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "");
 const DEFAULT_AVATAR = "/img/default-avatar.webp";
 
 export const useContactsList = () => {

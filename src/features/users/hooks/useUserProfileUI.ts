@@ -3,6 +3,11 @@ import { useEffect, useState } from "react";
 import { useUserProfile } from "./useUserProfile";
 import { useUpdateUserProfile } from "./useUpdateUserProfile";
 
+/* ================= BASE URL ================= */
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
+  "http://localhost:5000";
+
 export const useUserProfileUI = () => {
   const { profile, loading, error } = useUserProfile();
   const {
@@ -16,15 +21,16 @@ export const useUserProfileUI = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
 
-  // Initialize form fields from backend profile
+  // ================= INIT PROFILE =================
   useEffect(() => {
     if (profile) {
       setName(profile.name || "");
       setBio(profile.bio || "");
+
       if (profile.profilePic) {
         setPreview(
           profile.profilePic.startsWith("/uploads")
-            ? `http://localhost:5000${profile.profilePic}`
+            ? `${BASE_URL}${profile.profilePic}`
             : profile.profilePic
         );
       } else {
@@ -33,21 +39,20 @@ export const useUserProfileUI = () => {
     }
   }, [profile]);
 
-  // Handle photo change + immediate backend save
+  // ================= PHOTO UPDATE =================
   const handlePhotoChange = async (file: File | null) => {
     if (!file) return;
 
-    // Show preview immediately
+    // instant preview
     setPreview(URL.createObjectURL(file));
 
-    // Save photo to backend
+    // backend update
     await updateUserProfile({ photo: file });
 
-    // Close modal automatically
     setModalOpen(false);
   };
 
-  // Save other profile fields (name, bio)
+  // ================= SAVE PROFILE =================
   const handleSave = async () => {
     await updateUserProfile({ name, bio });
     setModalOpen(false);

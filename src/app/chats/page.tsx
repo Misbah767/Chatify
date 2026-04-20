@@ -7,36 +7,54 @@ import ChatWindow from "@/Components/chats/ChatWindow/ChatWindow";
 import { useChatPage } from "@/features/chats/hooks/useChatPage";
 
 const ChatPage: React.FC = () => {
-  const { activeTab, setActiveTab, selectedChat, openChat, isMobile } =
-    useChatPage();
+  const {
+    activeTab,
+    setActiveTab,
+    selectedChat,
+    openChat,
+    isMobile,
+    closeChat,
+  } = useChatPage();
+
+  // ✅IMPORTANT: wrap openChat to also lock tab to "contacts"
+  const handleSelectChat = (chat: any) => {
+    setActiveTab("contacts"); // 👈 keeps sidebar active state correct
+    openChat(chat);
+  };
 
   return (
-    <div className="flex h-screen bg-blue-400 text-white overflow-hidden">
-      {/* Sidebar Icons - always visible */}
-      <LeftSidebarIcons activeTab={activeTab} setActiveTab={setActiveTab} />
+    <div className="flex h-screen bg-[#141414] text-white overflow-hidden">
+      {/* ICONS */}
+      <LeftSidebarIcons
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        closeChat={closeChat}
+      />
 
-      {/* Sidebar Content */}
+      {/* LEFT PANEL */}
       <div
-        className={`flex flex-col w-full md:w-78 border-r border-gray-700 transition-transform duration-300
-          ${
-            isMobile && selectedChat
-              ? "-translate-x-full absolute z-30"
-              : "translate-x-0 relative md:relative"
-          }`}
+        className={`flex flex-col w-full md:w-78 border-r border-[#262626] transition-transform duration-300
+        ${
+          isMobile && selectedChat
+            ? "-translate-x-full absolute z-30"
+            : "translate-x-0 relative"
+        }`}
       >
         <LeftSidebarContent
           activeTab={activeTab}
-          onSelectChat={openChat}
+          onSelectChat={handleSelectChat} // use wrapped function
           selectedChat={selectedChat}
         />
       </div>
 
-      {/* Chat Window */}
+      {/* CHAT WINDOW */}
       {selectedChat && (
         <div
-          className={`flex-1 flex flex-col transition-all duration-300
-            ${isMobile ? "w-full absolute top-0 left-0 z-20" : ""}`}
-          style={{ height: "100%", maxHeight: "100%" }} // fixed height to prevent scroll
+          className={`
+            flex-1 flex flex-col
+            transition-all duration-300
+            ${isMobile ? "fixed inset-0 z-40 pb-16" : ""}
+          `}
         >
           <ChatWindow
             receiverId={selectedChat._id}
@@ -45,11 +63,9 @@ const ChatPage: React.FC = () => {
         </div>
       )}
 
-      {/* Placeholder for desktop if no chat is selected */}
+      {/* EMPTY STATE */}
       {!isMobile && !selectedChat && (
-        <div className="flex-1 flex items-center justify-center text-gray-400">
-          Select a contact to start chatting
-        </div>
+        <div className="flex-1 flex items-center justify-center text-gray-500 bg-[#141414]"></div>
       )}
     </div>
   );

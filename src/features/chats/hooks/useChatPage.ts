@@ -14,21 +14,13 @@ export interface Chat {
 export const useChatPage = () => {
   const currentUser = useSelector(selectUser);
 
-  // Tabs
+  //  ONLY REAL NAV TABS (NO "chats" HERE)
   const [activeTab, setActiveTab] = useState<
-    Tab | "profile" | "users" | "friendRequests" | "contacts" | "chats"
+    "profile" | "users" | "friendRequests" | "contacts"
   >("contacts");
 
-  // Selected chat
   const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
 
-  const openChat = (chat: Chat) => {
-    if (!chat?._id) return;
-    setSelectedChat(chat);
-    setActiveTab("chats");
-  };
-
-  // Responsive handling
   const [windowWidth, setWindowWidth] = useState<number>(
     typeof window !== "undefined" ? window.innerWidth : 1024
   );
@@ -41,13 +33,44 @@ export const useChatPage = () => {
 
   const isMobile = windowWidth < 768;
 
+  // OPEN CHAT (DO NOT CHANGE TAB)
+  const openChat = (chat: Chat) => {
+    if (!chat?._id) return;
+    setSelectedChat(chat);
+
+    //  REMOVED: setActiveTab("chats");
+    // Reason: chat is NOT a tab, it's UI state
+  };
+
+  // CLOSE CHAT
+  const closeChat = () => {
+    setSelectedChat(null);
+  };
+
+  // TAB SWITCH HANDLER
+  const handleSetActiveTab = (
+    tab: "profile" | "users" | "friendRequests" | "contacts"
+  ) => {
+    setActiveTab(tab);
+
+    // mobile behavior: close chat when switching sections
+    if (isMobile) {
+      setSelectedChat(null);
+    }
+  };
+
   return {
     currentUser,
+
     activeTab,
-    setActiveTab,
+    setActiveTab: handleSetActiveTab,
+
     selectedChat,
     setSelectedChat,
+
     openChat,
+    closeChat,
+
     isMobile,
   };
 };

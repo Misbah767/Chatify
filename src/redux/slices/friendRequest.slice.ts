@@ -11,10 +11,22 @@ import {
   fetchFriendStatus,
 } from "../actions/friendRequest.actions";
 
+/* ================= TYPES ================= */
+
 export interface FriendRequest {
   _id: string;
-  from: { _id: string; name: string; email?: string; profilePic?: string };
-  to: { _id: string; name: string; email?: string; profilePic?: string };
+  from?: {
+    _id?: string;
+    name?: string;
+    email?: string;
+    profilePic?: string;
+  };
+  to?: {
+    _id?: string;
+    name?: string;
+    email?: string;
+    profilePic?: string;
+  };
   status: "pending" | "accepted" | "rejected";
 }
 
@@ -29,6 +41,8 @@ interface FriendRequestState {
   error: string | null;
 }
 
+/* ================= STATE ================= */
+
 const initialState: FriendRequestState = {
   incoming: [],
   sent: [],
@@ -36,6 +50,8 @@ const initialState: FriendRequestState = {
   loading: false,
   error: null,
 };
+
+/* ================= SLICE ================= */
 
 const friendRequestSlice = createSlice({
   name: "friendRequest",
@@ -60,110 +76,85 @@ const friendRequestSlice = createSlice({
         status: "none" | "pending" | "accepted" | "rejected";
       }>
     ) {
-      state.relationshipStatuses[action.payload.userId] = action.payload.status;
+      const { userId, status } = action.payload || {};
+      if (!userId) return;
+
+      state.relationshipStatuses[userId] = status;
     },
   },
 
   extraReducers: (builder) => {
-    /* ================= SEND FRIEND REQUEST ================= */
+    /* ================= SEND REQUEST ================= */
     builder
-      .addCase(sendFriendRequest.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(
-        sendFriendRequest.fulfilled,
-        (state, action: PayloadAction<FriendRequest>) => {
-          state.loading = false;
-          state.sent.push(action.payload);
+      .addCase(sendFriendRequest.fulfilled, (state, action) => {
+        const req = action.payload;
+        if (!req) return;
 
-          if (action.payload.to?._id) {
-            state.relationshipStatuses[action.payload.to._id] = "pending";
-          }
-        }
-      )
+        state.sent.push(req);
+
+        const toId = req?.to?._id;
+        if (toId) state.relationshipStatuses[toId] = "pending";
+      })
       .addCase(sendFriendRequest.rejected, (state, action) => {
-        state.loading = false;
         state.error = action.payload as string;
       });
 
-    /* ================= RESPOND FRIEND REQUEST ================= */
-    builder
-      .addCase(respondFriendRequest.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(
-        respondFriendRequest.fulfilled,
-        (state, action: PayloadAction<FriendRequest>) => {
-          const req = action.payload;
-          state.loading = false;
+    /* ================= RESPOND REQUEST ================= */
+    builder.addCase(respondFriendRequest.fulfilled, (state, action) => {
+      const req = action.payload;
+      if (!req?._id) return;
 
-          const index = state.incoming.findIndex(
-            (r: FriendRequest) => r._id === req._id
-          );
+      state.incoming = state.incoming.filter((r) => r?._id !== req._id);
 
-          if (index >= 0) state.incoming[index] = req;
+      const fromId = req?.from?._id;
+      const toId = req?.to?._id;
 
-          state.relationshipStatuses[req.from._id] = req.status;
-          state.relationshipStatuses[req.to._id] = req.status;
-        }
-      )
-      .addCase(respondFriendRequest.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      });
+      if (fromId) state.relationshipStatuses[fromId] = req.status;
+      if (toId) state.relationshipStatuses[toId] = req.status;
+    });
 
-    /* ================= CANCEL FRIEND REQUEST ================= */
-    builder
-      .addCase(cancelFriendRequest.pending, (state) => {
-        state.loading = true;
-      })
-      .addCase(
-        cancelFriendRequest.fulfilled,
-        (state, action: PayloadAction<{ requestId: string }>) => {
-          state.loading = false;
+    /* ================= CANCEL REQUEST ================= */
+    builder.addCase(cancelFriendRequest.fulfilled, (state, action) => {
+      const requestId = action.payload?.requestId;
+      if (!requestId) return;
 
-          const canceledRequest = state.sent.find(
-            (r: FriendRequest) => r._id === action.payload.requestId
-          );
+      const canceled = state.sent.find((r) => r?._id === requestId);
 
-          if (canceledRequest) {
-            state.relationshipStatuses[canceledRequest.to._id] = "none";
-          }
+      if (canceled?.to?._id) {
+        state.relationshipStatuses[canceled.to._id] = "none";
+      }
 
-          state.sent = state.sent.filter(
-            (r: FriendRequest) => r._id !== action.payload.requestId
-          );
-        }
-      )
-      .addCase(cancelFriendRequest.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      });
+      state.sent = state.sent.filter((r) => r?._id !== requestId);
+    });
 
-    /* ================= FETCH INCOMING REQUESTS ================= */
+    /* ================= FETCH INCOMING ================= */
     builder.addCase(fetchIncomingRequests.fulfilled, (state, action) => {
-      state.loading = false;
-      state.incoming = action.payload;
+      const data = action.payload || [];
+      state.incoming = data;
 
-      action.payload.forEach((r: FriendRequest) => {
-        state.relationshipStatuses[r.from._id] = r.status;
+      data.forEach((r) => {
+        const id = r?.from?._id;
+        if (id) state.relationshipStatuses[id] = r.status;
       });
     });
 
-    /* ================= FETCH SENT REQUESTS ================= */
+    /* ================= FETCH SENT ================= */
     builder.addCase(fetchSentRequests.fulfilled, (state, action) => {
-      state.loading = false;
-      state.sent = action.payload;
+      const data = action.payload || [];
+      state.sent = data;
 
-      action.payload.forEach((r: FriendRequest) => {
-        state.relationshipStatuses[r.to._id] = r.status;
+      data.forEach((r) => {
+        const id = r?.to?._id;
+        if (id) state.relationshipStatuses[id] = r.status;
       });
     });
 
-    /* ================= FETCH FRIEND STATUS ================= */
+    /* ================= STATUS ================= */
     builder.addCase(fetchFriendStatus.fulfilled, (state, action) => {
-      state.loading = false;
-      state.relationshipStatuses[action.payload.userId] = action.payload.status;
+      const { userId, status } = action.payload || {};
+      if (!userId || !status) return;
+
+      state.relationshipStatuses[userId] = status;
     });
   },
 });
@@ -185,6 +176,8 @@ export const selectFriendRequestError = (state: RootState) =>
 export const selectRelationshipStatusByUser =
   (userId: string) => (state: RootState) =>
     state.friendRequest.relationshipStatuses[userId] || "none";
+
+/* ================= EXPORT ================= */
 
 export const { clearFriendRequestState, clearError, setRelationshipStatus } =
   friendRequestSlice.actions;

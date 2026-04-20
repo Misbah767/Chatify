@@ -43,7 +43,7 @@ export const useLogin = () => {
       const result = await dispatch(login(form));
       if (login.fulfilled.match(result)) {
         showSuccessToast("Logged in successfully!");
-        router.push("/dashboard"); // redirect after login
+        router.push("/chats"); // redirect after login
       } else {
         showErrorToast(
           result.payload && typeof result.payload === "string"

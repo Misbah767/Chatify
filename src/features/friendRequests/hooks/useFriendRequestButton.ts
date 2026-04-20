@@ -1,6 +1,6 @@
 "use client";
 
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "@/redux/store";
 import {
   sendFriendRequest,
@@ -8,45 +8,66 @@ import {
 } from "@/redux/actions/friendRequest.actions";
 import { setRelationshipStatus } from "@/redux/slices/friendRequest.slice";
 
-export const useFriendRequestButton = (userId: string) => {
+export const useFriendRequestButton = (userId?: string) => {
   const dispatch = useDispatch<AppDispatch>();
 
-  const relationshipStatus = useSelector(
-    (state: RootState) =>
-      state.friendRequest.relationshipStatuses[userId] || "none",
-    shallowEqual
+  const safeUserId = userId ?? "";
+
+  const relationshipStatus = useSelector((state: RootState) =>
+    safeUserId
+      ? state.friendRequest.relationshipStatuses[safeUserId] || "none"
+      : "none"
   );
 
+  /* ================= SEND ================= */
   const sendRequest = async () => {
-    if (relationshipStatus !== "none") return;
+    if (!safeUserId || relationshipStatus !== "none") return;
+
     try {
-      const res = await dispatch(sendFriendRequest(userId)).unwrap();
-      dispatch(setRelationshipStatus({ userId, status: "pending" }));
+      await dispatch(sendFriendRequest(safeUserId)).unwrap();
+
+      dispatch(
+        setRelationshipStatus({
+          userId: safeUserId,
+          status: "pending",
+        })
+      );
     } catch (err) {
-      console.error(err);
+      console.error("Send Request Error:", err);
     }
   };
 
+  /* ================= CANCEL ================= */
   const cancelRequest = async () => {
-    if (relationshipStatus !== "pending") return;
+    if (!safeUserId || relationshipStatus !== "pending") return;
+
     try {
-      const res = await dispatch(cancelFriendRequest(userId)).unwrap();
-      dispatch(setRelationshipStatus({ userId, status: "none" }));
+      await dispatch(cancelFriendRequest(safeUserId)).unwrap();
+
+      dispatch(
+        setRelationshipStatus({
+          userId: safeUserId,
+          status: "none",
+        })
+      );
     } catch (err) {
-      console.error(err);
+      console.error("Cancel Request Error:", err);
     }
   };
+
+  /* ================= UI STATE ================= */
 
   let buttonText = "Add Friend";
   let buttonClass = "bg-blue-500 text-white hover:bg-blue-600";
 
   if (relationshipStatus === "pending") {
     buttonText = "Pending";
-    buttonClass = "bg-gray-500 text-white cursor-not-allowed";
+    buttonClass = "bg-gray-500 cursor-not-allowed";
   }
+
   if (relationshipStatus === "accepted") {
     buttonText = "Friends";
-    buttonClass = "bg-green-500 text-white cursor-not-allowed";
+    buttonClass = "bg-green-500 cursor-not-allowed";
   }
 
   return {

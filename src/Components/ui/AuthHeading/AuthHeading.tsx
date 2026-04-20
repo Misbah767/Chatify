@@ -22,7 +22,7 @@ const AuthHeading: React.FC<AuthHeadingProps> = ({
 
       {/* Optional Second Heading */}
       {secondaryTitle && (
-        <h2 className="text-3xl font-semibold my-5 text-white font-[cursive]">
+        <h2 className="text-3xl font-semibold my-5 mb-5 text-white font-[cursive]">
           {secondaryTitle}
         </h2>
       )}

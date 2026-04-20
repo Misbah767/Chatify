@@ -1,6 +1,6 @@
 "use client";
 
-const BASE_URL = "http://localhost:5000";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "");
 
 export const useMessageBubble = (msg: any) => {
   const time = new Date(msg.createdAt).toLocaleTimeString([], {

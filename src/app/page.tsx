@@ -16,14 +16,14 @@ const LandingPage = () => {
   if (!mounted) return null;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0c1014] text-white">
+    <div className="flex flex-col min-h-screen bg-[#141414] text-[#FFFFFF]">
       <div className="flex flex-1 items-center justify-center gap-8 px-4 md:px-12">
         {/* LEFT IMAGE */}
         <div className="hidden md:flex flex-1 max-w-lg items-center justify-center">
           <img
-            src="/img/landing-2x.png"
+            src="/img/signup.png"
             alt="Chatify"
-            className="w-full h-auto object-cover rounded-lg transition-transform duration-500 ease-out hover:-translate-x-4 hover:-rotate-3"
+            className="w-full h-auto object-cover rounded-xl border border-[#262626]"
           />
         </div>
 
@@ -33,22 +33,19 @@ const LandingPage = () => {
           <div className="hidden md:flex flex-col w-full space-y-2">
             <AuthHeading
               title="Chatify"
-              subtitle="Connect instantly with friends and family. Share your moments, celebrate memories, and enjoy seamless conversations in one place."
+              subtitle="Stay connected with your friends and family through real-time conversations that feel natural and effortless."
             />
           </div>
 
           {/* Mobile heading */}
-          <h1 className="md:hidden text-center text-4xl font-bold mt-12 font-sacramento">
-            Share{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-500 to-red-500">
-              every moment
-            </span>{" "}
+          <h1 className="md:hidden text-center text-3xl font-bold mt-12">
+            Share <span className="text-[#703BF7]">every moment</span>{" "}
             effortlessly with Chatify
           </h1>
 
           {/* Mobile Button */}
           <button
-            className="md:hidden bg-gradient-to-r from-purple-500 via-pink-500 to-red-500 text-white px-6 py-3 rounded-full font-semibold mb-4"
+            className="md:hidden bg-[#703BF7] hover:bg-[#8f6aec] text-white px-6 py-3 rounded-full font-semibold mb-4 transition"
             onClick={() => router.push("/chats")}
           >
             Open Chatify
@@ -56,7 +53,7 @@ const LandingPage = () => {
 
           {/* Desktop LoginForm */}
           <div className="hidden md:flex flex-col w-full space-y-4">
-            <LoginForm /> {/* Clean login form for desktop */}
+            <LoginForm />
           </div>
         </div>
       </div>

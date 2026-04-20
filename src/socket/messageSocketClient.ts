@@ -9,6 +9,11 @@ import {
   deleteLocal,
 } from "@/redux/slices/message.slice";
 
+/* ================= BASE SOCKET URL ================= */
+const SOCKET_URL =
+  process.env.NEXT_PUBLIC_API_URL?.replace("/api", "") ||
+  "http://localhost:5000";
+
 interface UserSummary {
   _id: string;
   name?: string;
@@ -46,13 +51,13 @@ const normalizeMessage = (message: MessagePayload) => ({
   createdAt: message.createdAt,
 });
 
-// ================= INIT SOCKET =================
+/* ================= INIT SOCKET ================= */
 
 export const initMessageSocket = (userId: string) => {
   if (!userId) return;
   if (socket?.connected) return socket;
 
-  socket = io("http://localhost:5000", {
+  socket = io(SOCKET_URL, {
     transports: ["websocket"],
     withCredentials: true,
   });
@@ -70,7 +75,7 @@ export const initMessageSocket = (userId: string) => {
     console.error("Socket error:", err);
   });
 
-  // ================= RECEIVE MESSAGE =================
+  /* ================= RECEIVE MESSAGE ================= */
 
   socket.on("receive_message", (message: MessagePayload) => {
     const exists = store
@@ -83,19 +88,19 @@ export const initMessageSocket = (userId: string) => {
     }
   });
 
-  // ================= DELIVERED =================
+  /* ================= DELIVERED ================= */
 
   socket.on("message_delivered", (messageId: string) => {
     store.dispatch(markMessageDeliveredLocal(messageId));
   });
 
-  // ================= SEEN =================
+  /* ================= SEEN ================= */
 
   socket.on("message_seen", (messageId: string) => {
     store.dispatch(markMessageSeenLocal(messageId));
   });
 
-  // ================= DELETE =================
+  /* ================= DELETE ================= */
 
   socket.on("message_deleted", (messageId: string) => {
     store.dispatch(deleteLocal(messageId));
@@ -104,33 +109,31 @@ export const initMessageSocket = (userId: string) => {
   return socket;
 };
 
-// ================= SEND TEXT =================
+/* ================= SEND TEXT ================= */
 
 export const sendTextSocket = (message: any) => {
-  if (!socket) return;
-  socket.emit("send_text_message", { message });
+  socket?.emit("send_text_message", { message });
 };
 
-// ================= SEND MEDIA =================
+/* ================= SEND MEDIA ================= */
 
 export const sendMediaSocket = (message: any) => {
-  if (!socket) return;
-  socket.emit("new_media_message", message);
+  socket?.emit("new_media_message", message);
 };
 
-// ================= SEEN =================
+/* ================= SEEN ================= */
 
 export const seenSocket = (messageId: string, userId: string) => {
   socket?.emit("message_seen", { messageId, userId });
 };
 
-// ================= DELETE =================
+/* ================= DELETE ================= */
 
 export const deleteSocketNotify = (messageId: string, receiverId: string) => {
   socket?.emit("delete_message_notify", { messageId, receiverId });
 };
 
-// ================= TYPING =================
+/* ================= TYPING ================= */
 
 export const startTyping = (senderId: string, receiverId: string) => {
   socket?.emit("typing_start", { senderId, receiverId });
@@ -140,7 +143,7 @@ export const stopTyping = (senderId: string, receiverId: string) => {
   socket?.emit("typing_stop", { senderId, receiverId });
 };
 
-// ================= RECORDING =================
+/* ================= RECORDING ================= */
 
 export const startRecordingSocket = (senderId: string, receiverId: string) => {
   socket?.emit("recording_start", { senderId, receiverId });
@@ -150,7 +153,7 @@ export const stopRecordingSocket = (senderId: string, receiverId: string) => {
   socket?.emit("recording_stop", { senderId, receiverId });
 };
 
-// ================= LISTEN TYPING =================
+/* ================= LISTEN TYPING ================= */
 
 export const onTypingStart = (callback: (senderId: string) => void) => {
   socket?.on("typing_start", ({ senderId }) => {
@@ -164,7 +167,7 @@ export const onTypingStop = (callback: (senderId: string) => void) => {
   });
 };
 
-// ================= LISTEN RECORDING =================
+/* ================= LISTEN RECORDING ================= */
 
 export const onRecordingStart = (callback: (senderId: string) => void) => {
   socket?.on("recording_start", ({ senderId }) => {

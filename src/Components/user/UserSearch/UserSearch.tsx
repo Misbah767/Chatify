@@ -24,8 +24,8 @@ const UserSearch: React.FC<UserSearchProps> = ({ searchTerm, onSearch }) => {
           py-3
           rounded-xl
           border
-          border-gray-700
-          bg-gray-800
+          border-[#262626]
+          bg-[#141414]
           text-white
           placeholder-gray-400
           focus:outline-none

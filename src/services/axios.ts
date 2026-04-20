@@ -1,4 +1,5 @@
 // services/axios.ts
+
 import axios, {
   AxiosError,
   AxiosResponse,
@@ -6,15 +7,18 @@ import axios, {
   AxiosRequestHeaders,
 } from "axios";
 
+/* ================= BASE URL ================= */
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
 /* ================= MAIN API ================= */
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 
 /* ================= REFRESH API ================= */
 const refreshApi = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 
@@ -45,7 +49,6 @@ export const setAxiosToken = (token: string | null) => {
     else localStorage.removeItem("accessToken");
   }
 
-  // Update axios default headers
   if (token) api.defaults.headers.common["Authorization"] = `Bearer ${token}`;
   else delete api.defaults.headers.common["Authorization"];
 };
@@ -79,7 +82,6 @@ api.interceptors.response.use(
       _retry?: boolean;
     };
 
-    // Only retry once per request
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
@@ -87,7 +89,6 @@ api.interceptors.response.use(
     ) {
       originalRequest._retry = true;
 
-      // Queue if a refresh is already in progress
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -107,11 +108,9 @@ api.interceptors.response.use(
 
         if (!newAccessToken) throw new Error("No access token returned");
 
-        // Save & set token
         setAxiosToken(newAccessToken);
         processQueue(null, newAccessToken);
 
-        // Retry original request
         originalRequest.headers =
           originalRequest.headers || ({} as AxiosRequestHeaders);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;

@@ -6,9 +6,13 @@ import { Contact } from "@/features/contacts/hooks/useContacts";
 
 interface Props {
   onSelectContact?: (contact: Contact) => void;
+  selectedContactId?: string;
 }
 
-const ContactsList: React.FC<Props> = ({ onSelectContact }) => {
+const ContactsList: React.FC<Props> = ({
+  onSelectContact,
+  selectedContactId,
+}) => {
   const { contacts, loading, error, getAvatar } = useContactsList();
 
   if (loading)
@@ -29,26 +33,32 @@ const ContactsList: React.FC<Props> = ({ onSelectContact }) => {
     );
 
   return (
-    <div className="space-y-3 py-10 px-3 inset-0 bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px] cursor-pointer">
+    <div className="space-y-3 py-10 px-3 cursor-pointer bg-[#141414]">
       {contacts.map((contact) => (
         <div
           key={contact._id}
-          className="flex items-center justify-between p-3 bg-gray-800 rounded-xl border border-gray-700 hover:bg-gray-800 transition-colors duration-150"
           onClick={() => onSelectContact?.(contact)}
+          className={`
+            flex items-center justify-between
+            p-3 rounded-xl border
+            transition-colors duration-150
+            ${
+              selectedContactId === contact._id
+                ? "bg-[#262626] border-[#262626]"
+                : "bg-[#141414] border-[#262626] hover:bg-[#1a1a1a]"
+            }
+          `}
         >
-          {/* Left side */}
           <div className="flex items-center space-x-3">
             <img
               src={getAvatar(contact)}
               alt={contact.name}
-              className="w-16 h-16 rounded-2xl object-cover border border-gray-700"
+              className="w-16 h-16 rounded-2xl object-cover border border-[#262626]"
             />
 
             <div>
               <p className="text-white text-lg font-medium">{contact.name}</p>
-
               <p className="text-gray-400 text-xs">{contact.email}</p>
-
               <p className="text-sm mt-1 text-green-400">
                 {contact.status || "active"}
               </p>

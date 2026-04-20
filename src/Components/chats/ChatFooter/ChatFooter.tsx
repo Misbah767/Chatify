@@ -17,7 +17,7 @@ const ChatFooter: React.FC<Props> = ({ chatId }) => {
   const ui = useChatFooterUI(chatId);
 
   return (
-    <div className="bg-gray-800 border-t mb-16 border-gray-700 p-3 flex flex-col relative">
+    <div className="bg-[#141414] border-t border-[#262626] mb-16 p-3 flex flex-col relative">
       {/* BLOCKED OVERLAY */}
       {ui.isBlocked && (
         <div className="absolute inset-0 bg-black/60 z-20 flex items-center justify-center text-white text-sm">
@@ -47,11 +47,14 @@ const ChatFooter: React.FC<Props> = ({ chatId }) => {
 
       {/* FILE PREVIEW (inside input area) */}
       {ui.selectedFile && (
-        <div className="flex items-center gap-2 mb-2 bg-gray-700 p-2 rounded-md">
-          <span className="text-sm truncate flex-1">
+        <div className="flex items-center gap-2 mb-2 bg-[#262626] p-2 rounded-md">
+          <span className="text-sm truncate flex-1 text-gray-200">
             {ui.selectedFile.name}
           </span>
-          <button onClick={ui.removeFile} className="cursor-pointer">
+          <button
+            onClick={ui.removeFile}
+            className="cursor-pointer text-gray-300"
+          >
             <FiX />
           </button>
         </div>
@@ -64,7 +67,10 @@ const ChatFooter: React.FC<Props> = ({ chatId }) => {
         }`}
       >
         {/* EMOJI */}
-        <button onClick={() => ui.setShowEmoji(!ui.showEmoji)}>
+        <button
+          onClick={() => ui.setShowEmoji(!ui.showEmoji)}
+          className="text-gray-300"
+        >
           <FiSmile size={20} />
         </button>
 
@@ -76,7 +82,10 @@ const ChatFooter: React.FC<Props> = ({ chatId }) => {
         )}
 
         {/* FILE */}
-        <button onClick={() => ui.fileRef.current?.click()}>
+        <button
+          onClick={() => ui.fileRef.current?.click()}
+          className="text-gray-300"
+        >
           <FiPaperclip size={20} />
         </button>
 
@@ -89,7 +98,7 @@ const ChatFooter: React.FC<Props> = ({ chatId }) => {
 
         {/* INPUT */}
         <input
-          className="flex-1 bg-gray-700 px-3 py-2 rounded-md focus:outline-none"
+          className="flex-1 bg-[#262626] px-3 py-2 rounded-md focus:outline-none text-gray-200 placeholder-gray-500"
           value={ui.message}
           onChange={(e) => ui.handleTyping(e.target.value)}
           onKeyDown={ui.handleKeyDown}

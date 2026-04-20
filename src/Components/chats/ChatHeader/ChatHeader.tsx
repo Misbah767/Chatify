@@ -14,7 +14,7 @@ const ChatHeader: React.FC<Props> = ({ targetId }) => {
 
   if (!targetId) {
     return (
-      <div className="h-16 flex items-center justify-center text-gray-400 bg-gray-800 border-b border-gray-700">
+      <div className="h-16 flex items-center justify-center text-gray-400 bg-[#141414] border-b border-[#262626]">
         Select contact
       </div>
     );
@@ -23,7 +23,7 @@ const ChatHeader: React.FC<Props> = ({ targetId }) => {
   return (
     <>
       {/* Header */}
-      <div className="h-20 bg-gray-800 flex items-center justify-between px-4 border-b border-gray-700">
+      <div className="h-20 bg-[#141414] flex items-center justify-between px-4 border-b border-[#262626]">
         <div
           className="flex items-center space-x-3 cursor-pointer"
           onClick={openUserProfile}

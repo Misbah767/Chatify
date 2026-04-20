@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useUserProfile } from "@/features/users/hooks/useUserProfile";
 
-const BACKEND_URL = "http://localhost:5000";
+const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL?.replace("/api", "");
 const DEFAULT_AVATAR = "/img/default-avatar.webp";
 
 export const useLeftSidebarProfile = () => {

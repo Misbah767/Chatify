@@ -22,7 +22,7 @@ const UserProfileSidebar: React.FC<Props> = ({ open, onClose, user }) => {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 300, opacity: 0 }}
           transition={{ type: "spring", stiffness: 300, damping: 30 }}
-          className="fixed bg-gray-800 right-0 top-0 h-full w-80 border-l border-gray-700 p-6 z-50 flex flex-col overflow-hidden bg-[linear-gradient(to_right,#4f4f4f2e_1px,transparent_1px),linear-gradient(to_bottom,#4f4f4f2e_1px,transparent_1px)] bg-[size:14px_24px]"
+          className="fixed bg-black right-0 top-0 h-full w-80 border-l border-gray-700 p-6 flex flex-col overflow-hidden "
         >
           {/* Glow Shapes */}
           <div className="absolute top-0 -left-12 w-72 h-72 md:w-96 md:h-96 bg-[#4a5df9] opacity-20 blur-[100px]" />
