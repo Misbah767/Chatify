@@ -25,18 +25,26 @@ export const useSendFriendRequest = () => {
   const sendRequest = async (toId: string) => {
     if (!toId) return;
 
-    // Optimistic UI
+    // Optimistic UI update
     setLocalPending((prev) => [...prev, toId]);
 
     await dispatch(sendFriendRequest(toId));
 
-    // Refresh sent requests to keep store synced
+    // Sync with backend
     dispatch(fetchSentRequests());
   };
 
+  /**
+   * Check if request is already pending
+   */
   const isPending = (userId: string) =>
     localPending.includes(userId) ||
-    sentRequests.some((req) => req.to._id === userId);
+    sentRequests.some((req) => req.to?._id === userId);
 
-  return { sendRequest, isPending, sentRequests, loading };
+  return {
+    sendRequest,
+    isPending,
+    sentRequests,
+    loading,
+  };
 };
